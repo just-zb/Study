@@ -1,5 +1,365 @@
 Java
 ========
+https://notes.kamacoder.com/
+https://javabetter.cn/sidebar/sanfene/spring.html
+
+
+基础：
+<details>
+<summary>面向对象三大特性</summary>
+封装（Encapsulation）：
+概念：是指将数据（属性）和操作数据的方法（行为）捆绑在一起形成一个独立的单元（类/对象），并隐藏其内部实现细节，而是仅通过公共方法对外提供访问接口。
+好处：数据被保护在封装体内部，对外隐藏实现细节。
+继承（Inheritance）：
+概念：是指让类与类之间产生父子关系。它允许一个类（子类）从另一个已存在的类（父类）中继承属性和方法，从而实现代码的复用，并建立类之间的层级关系。
+好处：提高代码复用性，类与类之间建立“is-a”的关系。
+多态（Polymorphism）：
+概念：是指允许父类引用指向子类对象，并在运行时根据对象的实际类型调用相应的方法。它使得“一个接口，多种实现”成为现实。
+好处：提高代码的灵活性和可扩展性。
+</details>
+<details>
+<summary>对多态的理解</summary>
+定义：
+多态（Polymorphism）是指“一个接口，多种实现”。在 Java 中，多态主要体现在——允许父类引用指向子类对象，并在运行时根据对象的实际类型调用相应的方法，即动态绑定机制。
+特点：
+运行时绑定（动态绑定）：这是多态的核心机制，编译器在编译时只知道引用变量的类型（静态类型），但在程序运行时，JVM 会根据对象的实际类型（动态类型）来查找并调用相应的方法。
+提高可扩展性：增加新的子类时，无需修改现有代码，只需让新子类重写父类方法。
+实现多态的三个必要条件：
+继承或实现关系：必须存在子父类继承关系或接口实现关系。
+方法重写（Override）：子类必须重写父类的方法（或实现接口方法）。
+父类引用指向子类对象。
+优点：
+可维护性高：修改具体实现不影响调用方。
+可扩展性强：新增子类只需实现父类接口或重写方法，无需修改调用方代码。
+缺点：
+父类引用不能直接使用子类的特有成员：这是多态的一个限制。例如，Animal animal = new Dog();，animal 引用对象无法直接调用 Dog 类特有的方法，除非进行强制类型转换。
+</details>
+<details>
+<summary>equals与==的区别	
+</summary>
+使用"=="进行比较：
+==是一个比较运算符，既可以判断基本类型，又可以判断引用类型。
+如果判断基本类型，判断的是二者的值是否相等(eg : 判断1 == 1，结果为true；判断1 == 3，结果为false)；
+如果判断引用类型，判断的是二者的地址是否相同，即判定是否为同一对象(eg : Student student1 = new Student();，Student student2 = student1；判断student2 == student1，结果为true)。
+使用equals()方法进行比较：
+equals()方法是顶层父类Object类中的方法，
+可以看到，Object类中的 equals 方法用来检测两个对象是否相等，即默认情况下比较的是两个对象的引用(地址)。这一点和 == 用于判断引用类型时一致。
+equals的特点在于，它是Object类中的方法，因此，equals方法往往在子类中被重写，例如在String类中，equals方法被重写去判断两个字符串的内容是否相等。并且，在我们自己创建的类中，equals方法也常常被重写，去判断两个对象的指定的具体内容是否一致。
+还有一点要注意，“==”的运行速度通常比“equals方法”更快；因为==比较引用类型时，仅比较地址；而equals方法的性能要取决于具体实现。
+</details>
+
+<details>
+<summary>介绍一下泛型以及其作用</summary>
+泛型的概念：
+泛型（Generics）是 Java 的一种参数化类型机制，允许在定义类、接口或方法时声明类型参数，并在使用时指定具体类型，实现类型安全的代码复用。
+泛型的作用：
+类型安全：泛型强制在编译时检查类型匹配，避免运行时出现 ClassCastException。
+消除强制转换：泛型自动处理类型转换，无需手动进行强制类型转换。
+代码复用：适用于编写通用算法和数据结构（如 List<T>、Map<K,V>）。
+泛型的应用：
+自定义泛型类：泛型最后代表的数据类型是在创建对象时确定的。
+自定义泛型接口：泛型最终代表的数据类型是在继承该接口或者实现该接口时确定的。
+自定义泛型方法：泛型最终代表的数据类型是在调用方法时确定的，每次调用泛型方法，都可以指定不同的泛型类型。
+通过使用通配符（?）和边界（<? extends T>、<? super T>），可以实现灵活的类型匹配。
+</details>
+<details>
+<summary>为什么重写equals要重写hashcode？</summary>
+为什么
+</details>
+
+<details>
+<summary>
+方法重载和重写的区别？</summary>
+方法重载（Overload）：在同一个类中定义多个同名方法，但参数列表（类型、数量或顺序）不同。
+方法重写（Override）：在子类中重新定义父类的方法，要求方法签名（方法名、参数列表、返回类型）完全相同。
+</details>
+
+<details>
+<summary>String、StringBuffer与StringBuilder区别</summary>
+**可变性**，**线程安全性**，**性能**，**应用场景**
+</details>
+
+
+
+IO相关：
+
+<details>
+<summary>BIO、NIO与AIO的区别？
+</summary>
+BIO、NIO、AIO是Java中用于处理I/O操作的几种不同的模型。
+BIO是同步阻塞模型，适合连接数较少且固定的情况
+NIO是同步非阻塞模型，适合连接数较多且连接时间较短的情况
+AIO是异步非阻塞模型，适合连接数较多且连接时间较长的情况。
+</details>
+
+异常相关：
+<details>
+<summary>Error与Exception的区别</summary>
+1. Exception (异常) ：表示程序在运行过程中可能遇到的、可以被捕获和处理的异常情况。这些异常通常是由于外部因素或程序逻辑错误导致的，是可恢复的。
+2. Error (错误) ：表示 JVM 内部或系统级别的严重问题，通常是致命的，应用程序无法预料和恢复。
+</details>
+
+<details>
+<summary>Java异常类型有哪些？
+</summary>
+Java 中的异常都继承自 java.lang.Throwable 类，它分为两大类：Error 和 Exception。
+Error(错误) ：
+表示 JVM 内部 或 系统级别的问题，通常是很严重的，程序无法恢复。例如：OutOfMemoryError (内存溢出)、StackOverflowError (栈溢出)。
+Exception(异常) ：
+表示程序在 编译时 或 运行时 可能发生的问题，通常是可捕获和处理的。Exception 又分为两大子类：
+① 编译期异常 (Checked Exception) ：是指编译器强制检查的异常，必须进行 try-catch 捕获处理 或者 throws 声明处理，常见的编译期异常有 IOException (输入输出异常)、SQLException (数据库操作异常)。
+② 运行期异常 (Runtime Exception / Unchecked Exception) ：是指编译器不强制检查的异常，通常是程序逻辑错误导致的，可选择性处理，常见的运行期异常有 NullPointerException (空指针异常)、ArrayIndexOutOfBoundsException (数组越界异常)。
+</details>
+
+<details>
+<summary>Checked与Unchecked异常的区别
+</summary>
+Checked Exception (编译期异常) ：指所有直接或间接继承自 java.lang.Exception，但不是 java.lang.RuntimeException 及其子类的异常。编译器会强制检查这类异常。
+Unchecked Exception (运行期异常) ：指 java.lang.RuntimeException 类及其所有子类。编译器不强制检查这类异常。
+</details>
+# 集合
+<details>
+<summary>常见集合类
+</summary>
+Collection 接口（单列集合）：
+单列集合用于存储单个元素。
+主要的子接口包括：
+① List ：它的特点是“有序、可重复”。List接口的常见实现类有：ArrayList, Vector 和 LinkedList。
+② Set ：Set集合的特点是“无序、不可重复”。Set接口的常见实现类有：HashSet, TreeSet。
+③ Queue ：队列，它的特点是先进先出（FIFO）。Queue接口的常见实现类有：PriorityQueue。
+Map 接口（双列集合）：
+用于存储键值对（Key-Value Pair）。特点是“键（Key）唯一，值（Value）可重复”。
+Map接口的常见实现类有：：HashMap, Hashtable, TreeMap。
+</details>
+<details>
+<summary>线程安全集合类有哪些
+</summary>
+线程安全集合类
+</details>
+
+<details>
+<summary>Map接口的实现类</summary>
+HashMap: HashMap是基于哈希表实现的，可以提供快速的键值对存取，但是不保证迭代顺序。它允许 null 键和 null 值，但它是非线程安全的。
+LinkedHashMap: LinkedHashMap继承自 HashMap，它通过内部维护的双向链表来维护元素的插入顺序或访问顺序。LinkedHashMap也允许 null 键和 null 值，但它也是非线程安全的。
+TreeMap: TreeMap是基于红黑树实现的，它按照键的自然顺序 或者是 自定义的比较器进行排序。TreeMap并不允许 null 键，它也是非线程安全的。
+ConcurrentHashMap: ConcurrentHashMap是目前常用的高性能的线程安全 Map。它通过分段锁（JDK 1.7）或 CAS + synchronized（JDK 1.8+）来实现并发控制。ConcurrentHashMap不允许 null 键。
+Hashtable: Hashtable算是比较传统的线程安全 Map，它的所有操作都通过 synchronized 关键字同步，因此性能较低。Hashtable既不允许 null 键，也不允许 null 值。
+Properties: 它是 Hashtable 的子类，主要用于读写键和值都是 String 类型的配置文件。
+</details>
+
+<details>
+<summary>ArrayList与LinkedList的区别
+</summary>
+不知道
+</details>
+
+<details>
+<summary>ArrayList扩容机制
+</summary>
+ArrayList 的扩容机制：
+当其内部存储元素的数组，它的容量不足以容纳新元素时，ArrayList 会自动创建一个更大的新数组，并将原数组中的所有元素都复制到这个新数组中。
+这个过程发生在当内部数组的 size 等于 elementData.length 并且还调用 add() 方法时触发。
+默认的扩容策略是将当前容量扩大 1.5 倍（newCapacity = oldCapacity + (oldCapacity >> 1)）。虽然单次扩容涉及元素复制，时间复杂度为 O(N)，但由于容量是指数级增长的，因此向 ArrayList 中添加元素的均摊时间复杂度为 O(1) 。
+</details>
+
+<details>
+<summary>HashMap、HashSet、HashTable与ConcurrentHashMap
+</summary>
+HashMap：存键值对（键唯一、值可重，允许 null 键值），非同步（单线程快），底层哈希表，迭代器为 Iterator（并发修改可能抛异常），可自定义初始容量和加载因子，继承 AbstractMap。
+HashTable：存键值对（键值均不允许 null），同步（方法加锁，多线程性能差），底层哈希表，迭代器为 Enumeration，初始容量和加载因子固定，继承 Dictionary。
+HashSet：存唯一元素（无键值，仅元素操作，允许 1 个 null），非同步，底层基于 HashMap（仅用键位），迭代器为 Iterator，因只存键，性能略优于 HashMap。
+ConcurrentHashMap：存键值对（键值均不允许 null），线程安全（分段锁 / Java8 后 CAS，高并发性能优），支持并发增删（迭代顺序不保证），可自定义容量、加载因子和并发级别。
+</details>
+<details>
+<summary>HashMap实现原理
+</summary>
+不知道
+</details>
+
+<details>
+<summary>HashMap的put方法
+</summary>
+是什么
+</details>
+
+<details>
+<summary>HashMap扩容机制
+</summary>
+是什么
+</details>
+
+<details>
+<summary>HashMap为什么不是线程安全
+</summary>
+为啥
+</details>
+
+<details>
+<summary>HashMap如何解决hash冲突？</summary>
+HashMap如何解决hash冲突？
+</details>
+
+<details>
+<summary>ConcurrentHashMap线程安全
+</summary>
+ConcurrentHashMap线程安全
+</details>
+
+<details>
+<summary> CopyOnWriteArrayList 的实现原理</summary>
+CopyOnWriteArrayList
+</details>
+
+<details>
+<summary>什么是BlockQueue？</summary>
+什么是BlockQueue？
+</details>
+
+# 并发
+
+首先，操作系统层面有进程和线程，知道进程和线程的区别。java支持创建操作系统级别的线程。线程是一个概念
+
+1. 知道如何创建线程
+2. 创建线程的过程中线程会出现哪些状态。
+
+多线程带来了一些问题。就要保证线程安全。保证线程安全是一个大的目标：
+
+1. 为了控制对共享资源的并发访问，需要通过对共享资源加锁，所以要对锁有所了解
+   1. synchronized
+   2. Lock
+   3. 把共享资源设置为如原子类，是锁的一种。所以对原子类的原理cas了解
+3. 要控制线程之间的执行顺序。比如生产者唤醒消费者。则进行线程之间调度，知道线程之间调度的方式
+4. 为了帮助进行并发编程，使用并发工具类，理解一些常用的并发工具类
+
+往往对多线程的使用不是自己主动创建线程，而是使用线程池，所以要对线程池深入理解
+
+接着就是会排查死锁问题，预防死锁。
+
+## 线程概念相关：
+
+<details>
+<summary>说说进程和线程的区别？</summary>
+进程是是操作系统分配资源的最小单位
+线程是进程中的独立执行单元，多个线程可以共享同一个进程的资源，每个线程都有自己独立的栈和寄存器
+</details>
+
+
+
+<details>
+<summary>线程如何通信？</summary>
+可以通过消息传递和共享内存两种方法，java采用共享内存，就是JMM
+</details>
+
+<details>
+<summary>创建线程的方式？</summary>
+继承Thread类,重写run()方法。
+实现Runnable接口，实现run()方法。
+实现Callable接口（配合Future/FutureTask），实现call()方法。
+使用线程池(Executor框架)。
+</details>
+
+<details>
+<summary>线程有几种状态？</summary>
+具体建图
+</details>
+
+<details>
+<summary>线程start与run的区别？</summary>
+run() 方法不会创建一个新的线程，只会在当前线程中执行run方法的代码。
+start() 方法可以启动一个新线程，能够实现多线程执行。
+</details>
+<details>
+<summary>实现线程的局部变量用到的ThreadLocal 是什么？</summary>
+实现线程的局部变量用到的ThreadLocal 是什么？
+</details>
+
+## 线程安全：
+<details>
+<summary>多线程带来了哪些问题？</summary>
+一段代码块或者一个方法被多个线程同时执行，处理共享数据时会出现问题。
+从三个要素保证安全：
+原子性：不会出现中间态。
+可见性：一个线程的修改其他线程看到变化。涉及到Java内存模型
+有序性：线程不会因为死锁、饥饿、活锁等问题导致无法继续执行。有序性定义了线程的执行顺序。
+</details>
+
+<details>
+<summary>你对 Java 内存模型的理解？</summary>
+Java 内存模型是 Java 虚拟机规范中定义的一个抽象模型，用来描述多线程环境中共享变量的内存可见性
+</details>
+
+<details>
+<summary>volatile关键字有什么用？volatile跟有序性的关系</summary>
+volatile是Java并发编程中常用的关键字，作为变量修饰符，无法修饰方法以及代码块，被修饰的共享变量保证了不同线程对该变量操作的内存可见性且禁止指令重排序。
+</details>
+
+<details>
+<summary>如何实现java线程安全？</summary>
+控制多个线程对共享资源的并发访问，避免出现数据不一致，竞态条件等问题
+可以分为三种方式：
+- 阻塞同步（使用锁实现）
+- 非阻塞同步（基于CAS操作）
+- 无同步方案（避免共享资源）
+</details>
+<details>
+<summary>控制线程间调度的方法？</summary>
+控制线程间调度的方法？
+</details>
+<details>
+<summary>sleep和wait的区别？</summary>
+不知道
+</details>
+
+## 锁相关：
+<details>
+<summary>Java有哪些锁？</summary>
+Java中有很多关于锁的概念，可以分类成下面几个方面理解
+按照锁的获取机制（看待并发同步的角度）：乐观锁/悲观锁
+按照锁的竞争策略：公平锁/非公平锁
+按照锁控制的资源范围：偏向锁/轻量级锁/重量级锁/分段锁
+按照功能特性：可重入锁/读写锁/自旋锁/互斥锁
+按照持有方式：独享锁/共享锁
+</details>
+
+<details>
+<summary>你对Synchronized的理解？</summary>
+synchronized是Java中最基础的线程同步关键字，通过互斥锁机制保证多线程对共享资源的安全访问，可以修饰方法或代码块。
+</details>
+
+<details>
+<summary>synchronized与Lock的对比</summary>
+synchronized：是基于JVM的内置锁，只能用于方法和代码块，需要与wait() 和notify()/notifyAll() 方法一起使用，用于线程等待和通知。
+lock：是接口，Java提供的显式锁机制，需要手动获取和释放锁，更加灵活，支持响应中断、设置锁的公平性等，与Condition接口结合可以实现更细粒度的线程等待和通知机制。
+ReentrantLock：是Lock接口的一个具体实现类，拥有Lock的特性。
+</details>
+
+<details>
+<summary>volatile与synchronized对比
+</summary>
+synchronized是确保数据的一致性和线程安全，解决多个线程之间访问资源的同步性。而volatile是确保变量在多个线程的可见性和有序性。
+volatile不需要获取/释放锁，性能较高且轻量级。
+synchronized可以修饰方法以及代码块，volatile只能修饰变量。
+</details>
+<details>
+<summary>CAS 了解多少？</summary>
+对cas
+</details>
+
+
+
+## 线程池：
+<details>
+<summary>为什么要有线程池？线程太多会怎么样？</summary>
+采用多线程编程时，如果线程过多会造成系统资源的大量占用，降低系统效率。
+</details>
+
+<details>
+<summary>线程池参数
+</summary>
+线程池的构造函数有七个参数，分别是核心线程数（corePoolSize）、最大线程数（maximumPoolSize）、空闲线程存活时间（keepAliveTime）、时间单位（TimeUnit）、线程池任务队列（workQueue）、线程工厂（ThreadFactory）和拒绝策略（RejectedExecutionHandler）。
+线程池的参数决定了线程池的并发能力，资源占用和任务处理策略，需要根据实际场景进行合理配置。
+</details>
+
 # JVM
 
 https://claude.ai/share/560e512b-3e16-450e-8383-7bc1f7ac14c5
@@ -895,6 +1255,23 @@ SpringBoot是践行了约定大于配置的思想的,对spring框架的增强. �
 >
 > `META-INF`是Java的约定目录，专门放元数据信息，jar包里都有这个目录。只有当你自己写一个自定义starter给别人用的时候，才需要自己创建`META-INF/spring.factories`文件。
 
+### **自动装配的原理是什么？**
+
+1. SpringBoot的自动配置是基于条件的按需配置，本质是通过注解驱动+SPI机制，根据项目依赖、环境配置、自定义规则，自动向IoC容器注入对应Bean，替代传统Spring的XML手动配置。
+2. SpringBoot是通过@SpringBootApplication注解中的@EnableAutoConfiguration触发自动配置，借助SpringFactoriesLoader加载META-INF/spring.factories中的自动配置类；通过条件注解（如@ ConditionalOnClass）筛选出符合当前环境的配置类后，向IoC容器注入默认Bean；同时遵循 “自定义优先” 原则，开发者可手动配置Bean或禁用自动配置类，覆盖默认行为，最终实现 “按需配置、简化开发” 的目标。
+
+### **自动装配过程是怎样的？**
+
+1. **扫描阶段**：Spring容器启动，会通过@ComponentScan指定扫描包，扫描所有标注@Component及其衍生注解的类，生成BeanDefinition，也就是bean的定义信息；
+2. **注册阶段**：将BeanDefinition注册到BeanFactory中，此时仅保存bean的元信息，未创建实例；
+3. **实例化阶段**：容器首次获取bean时，会通过反射根据BeanDefinition创建 bean 实例；
+4. **依赖解析阶段**：AutowiredAnnotationBeanPostProcessor扫描bean的字段、setter方法、构造方法上的@Autowired注解，解析需要注入的依赖类型 / 名称；
+5. **依赖查找阶段**：根据解析的依赖信息，从BeanFactory中查找匹配的bean：优先按类型查找；若找到多个同类型 bean，按名称匹配（byName）；若仍匹配失败，抛出NoUniqueBeanDefinitionException（可通过@Qualifier指定bean名称解决）；
+6. **注入阶段**：将找到的依赖bean注入到当前bean的字段 / 方法中，完成自动装配；
+7. **初始化阶段**：调用@PostConstruct注解的方法，完成bean的初始化。
+
+
+
 `SpringBoot Starter`是什么,如何自定义一个 `SpringBoot Starter`?
 
 <u>Starter 的核心思想是把相关的依赖打包在一起，让开发者只需要引入一个 starter 依赖，就能获得完整的功能模块。每个Starter包含自动配置类,通过条件注解判断是否生效.spring.factories 文件是 Spring Boot 自动装配的核心,位于META_INF目录下</u>
@@ -929,6 +1306,13 @@ Spring Boot 不是一个独立的框架，而是基于 Spring 框架的脚手架
 
 
 ## 实际开发
+
+项目如何打印日志？
+
+1. 一般来说，我会使用**SLF4J+Logback**日志框架统一日志，按照ERROR、WARN、INFO和DEBUG四个级别进行分类打印，ERROR是系统异常、业务错误、必须打堆栈；WARN则是打印参数不合法、调用超时、可恢复异常；INFO是接口入参出参等核心流程节点信息；DEBUG是本地调试的时候使用。
+2. 我在日志中会打印时间、线程名、类名、方法名、请求ID、业务ID和描述信息等内容。通常在项目的关键位置设置日志打印，如接口入参出参、核心业务逻辑、异常catch块与第三方接口相关的操作处设置。
+
+
 
 Spring MVC获取 请求参数,路径变量,请求头,请求体:
 
