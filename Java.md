@@ -61,7 +61,12 @@ equals的特点在于，它是Object类中的方法，因此，equals方法往�
 自定义泛型接口：泛型最终代表的数据类型是在继承该接口或者实现该接口时确定的。
 自定义泛型方法：泛型最终代表的数据类型是在调用方法时确定的，每次调用泛型方法，都可以指定不同的泛型类型。
 通过使用通配符（?）和边界（<? extends T>、<? super T>），可以实现灵活的类型匹配。
+
+?extend T 是生产者，?super T是消费者
+
+List<String> 和 List<Object>实现方式完全相同，List<T>类在类型擦除后，T一定是object对象。所以他们两个相同，不过编译器为List<String>实现了强制转换。
 </details>
+
 <details>
 <summary>为什么重写equals要重写hashcode？</summary>
 为什么
@@ -73,11 +78,18 @@ equals的特点在于，它是Object类中的方法，因此，equals方法往�
 方法重载（Overload）：在同一个类中定义多个同名方法，但参数列表（类型、数量或顺序）不同。
 方法重写（Override）：在子类中重新定义父类的方法，要求方法签名（方法名、参数列表、返回类型）完全相同。
 </details>
-
+<details>
+<summary>Stringbuilder原理</summary>
+内部维护char[],默认容量16，需要扩容时，核心就是原始容量翻倍加 2，如果不够，直接用实际需要的大小。
+Java 9 之后内部从 char[] 改为了 byte[]，配合一个 coder 标志位，对纯 Latin-1 字符串只用一个字节存储，否则用utf16，两个字节存储
+</details>
 <details>
 <summary>String、StringBuffer与StringBuilder区别</summary>
 **可变性**，**线程安全性**，**性能**，**应用场景**
+
+  StringBuffer方法由synchronized同步。
 </details>
+
 
 
 
@@ -95,6 +107,7 @@ AIO是异步非阻塞模型，适合连接数较多且连接时间较长的情�
 异常相关：
 <details>
 <summary>Error与Exception的区别</summary>
+都继承自throwable
 1. Exception (异常) ：表示程序在运行过程中可能遇到的、可以被捕获和处理的异常情况。这些异常通常是由于外部因素或程序逻辑错误导致的，是可恢复的。
 2. Error (错误) ：表示 JVM 内部或系统级别的严重问题，通常是致命的，应用程序无法预料和恢复。
 </details>
@@ -112,30 +125,30 @@ Exception(异常) ：
 </details>
 
 <details>
-<summary>Checked与Unchecked异常的区别
-</summary>
-Checked Exception (编译期异常) ：指所有直接或间接继承自 java.lang.Exception，但不是 java.lang.RuntimeException 及其子类的异常。编译器会强制检查这类异常。
-Unchecked Exception (运行期异常) ：指 java.lang.RuntimeException 类及其所有子类。编译器不强制检查这类异常。
+<summary>try-catch代码块的逻辑</summary>
+finally 永远会执行，且在 return 之前执行，所以
+finally的return会覆盖try/catch 的 return，也会覆盖try中抛出的异常。 finally中抛出的异常会覆盖try中的异常
+return时，确定一个快照，返回值已经被复制到一个临时变量中。
+finally更改基本类型，则无法影响return，但更改引用类型，则可以影响return。
 </details>
 # 集合
 <details>
 <summary>常见集合类
 </summary>
 Collection 接口（单列集合）：
-单列集合用于存储单个元素。
-主要的子接口包括：
 ① List ：它的特点是“有序、可重复”。List接口的常见实现类有：ArrayList, Vector 和 LinkedList。
 ② Set ：Set集合的特点是“无序、不可重复”。Set接口的常见实现类有：HashSet, TreeSet。
 ③ Queue ：队列，它的特点是先进先出（FIFO）。Queue接口的常见实现类有：PriorityQueue。
 Map 接口（双列集合）：
-用于存储键值对（Key-Value Pair）。特点是“键（Key）唯一，值（Value）可重复”。
 Map接口的常见实现类有：：HashMap, Hashtable, TreeMap。
 </details>
+
 <details>
 <summary>线程安全集合类有哪些
 </summary>
 线程安全集合类
 </details>
+
 
 <details>
 <summary>Map接口的实现类</summary>
@@ -146,12 +159,13 @@ ConcurrentHashMap: ConcurrentHashMap是目前常用的高性能的线程安全 M
 Hashtable: Hashtable算是比较传统的线程安全 Map，它的所有操作都通过 synchronized 关键字同步，因此性能较低。Hashtable既不允许 null 键，也不允许 null 值。
 Properties: 它是 Hashtable 的子类，主要用于读写键和值都是 String 类型的配置文件。
 </details>
-
 <details>
 <summary>ArrayList与LinkedList的区别
 </summary>
-不知道
+ArrayList基于动态数组（Object[] 数组）实现。
+LinkedList基于双向链表实现。
 </details>
+
 
 <details>
 <summary>ArrayList扩容机制
@@ -173,69 +187,202 @@ ConcurrentHashMap：存键值对（键值均不允许 null），线程安全（�
 <details>
 <summary>HashMap实现原理
 </summary>
-不知道
+底部存储entry数组，
+jdk1.7采用数组+链表形式，采用头插法。把新加入的entry放到链表头部，目的是后插入的元素先访问。
+jdk1.8之后采用数组+链表+红黑树，使用尾插法，当链表长度大于8，整体元素个数大于64进行树化，选用尾插法因为多线程下头插法会出现循环链表问题。
+</details>
+<details>
+<summary>hashmap的hash函数，以及hashCode() equals()
+</summary>
+HashMap的hash函数，用到hashcode方法，并进行扰动处理。 (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16); 前16位和后16位异或。 由hash值定位桶位置：index = hash & (table.length - 1)
+当hashcode定位到桶位置，如果有多个元素，则调用equals比较，确定哪个是key。
+equals相同的两个对象则hashcode一定相同，只重写equals()而不重写hashCode()，会导致两个相同的对象分配到不同的桶，违反了hashmap的唯一性，出现能存进去但是取不出来。
 </details>
 
 <details>
 <summary>HashMap的put方法
 </summary>
-是什么
+put首先计算hash值，定位存储索引位置，检查对应位置是否有值。 
+如果有，调用equals方法检查key是否存在，如果存在则更新旧值，否则尾插。
+插入完毕后检查是否树化，以及hashmap是否扩容。
 </details>
 
 <details>
 <summary>HashMap扩容机制
 </summary>
-是什么
+进行扩容时，遍历链表每个桶。
+- 没有元素，则跳过
+- 有一个元素，则直接计算hash&（newCap-1）
+- 是链表，则对链表每一个元素计算。 同一个链表中的元素的hash值不一定相同，只是在oldcap下分配到了一个链表。 现在是newcap，则拆分成两个链表：分为原位置和新位置。 根据用原先位置key的hash值与旧数组的长度进行“与”操作，为0则是原位置链表，为1则是新位置链表。
+- 是红黑树，则跟链表一样拆分成两个链表，不过进行额外的判断，如果链表长度<=6，则退化为链表，大于6则把链表进行树化。
+</details>
+
+<details>
+<summary>在 resize() 方法中，为什么链表在扩容时，元素只会分到两个位置（原位置 j 或 j + oldCap），而不是完全重新计算哈希值？这种优化是如何实现的？</summary>
+resize会让容量翻倍，并且旧容量和新容量都是2的幂次方，检查元素的hash值在oldCap位的二进制是0还是1，(e.hash & oldCap) == 0 直接判断它在新数组的位置，避免重新计算
+</details>
+<details>
+<summary>为什么HashMap数组长度是2的n次幂？</summary>
+用位运算代替取模。index = hash & (length - 1)
+扩容时拆分链表也是利用了这个特性，hash & oldCap
 </details>
 
 <details>
 <summary>HashMap为什么不是线程安全
 </summary>
-为啥
+hashmap的操作不是原子的，多线程操作让hashmap的底层数组出现数据不一致。
+从原子性，可见性，有序性出发：
+原子性：HashMap的put()方法不是原子操作，并发时会被中断，导致数据覆盖。
+可见性：快速失败设计模式：HashMap的modCount数组元素等共享变量未使用volatile修饰，线程A修改后，线程B可能看到旧值，导致迭代器判断错误。
+</details>
+<details>
+<summary>为什么hashmap允许null但是concurrenthashmap不允许</summary>
+HashMap 允许 null 是因为单线程下有办法消除歧义，调用containsKey在调用get。
+但是如果concurrenthashmap允许null，则调用containsKey时，再执行get，在这个间隙中，key被移除，所以get得到的null值会有歧义，无法区分是否是不存在还是值为null。
 </details>
 
-<details>
-<summary>HashMap如何解决hash冲突？</summary>
-HashMap如何解决hash冲突？
-</details>
+
 
 <details>
-<summary>ConcurrentHashMap线程安全
+<summary>Hash冲突解决方案
 </summary>
-ConcurrentHashMap线程安全
+开放地址法： 是指当发生冲突时，在数组中寻找下一个可用的空位，由线性探测，二次方探测，双重哈希。使用两个不同的哈希函数。第一个用于计算初始位置，第二个用于计算每次探测的步长
+链地址法（拉链法）：是指在冲突位置拉出一个数据结构（通常是链表），然后将所有冲突的元素都存放在这个数据结构中。
+
+为什么hashmap采用拉链法？
+链地址法在删除元素时非常简单，只需要将链表中的对应节点移除即可，开放地址删除元素麻烦。
+开放地址法对扩容因子（数组拥挤，导致冲突多），和哈希函数的均匀性（不匀均导致冲突多）要求高
+</details>
+
+## 并发安全集合：
+
+<details>
+<summary>ConcurrentHashMap 的实现原理</summary>
+jdk7采用分段锁，整个map被分为若干段，对不同的段加段锁来控制并发。段Segment集成reentrantLock，包含键值对数组。
+而jdk8中，使用更细粒度的锁，是对桶加锁，配合 CAS + synchronized控制并发
+对于读操作，使用volatile保证可见性，所以针对get不用加锁，保证读取的是最新的内容
+对于写操作，优先使用cas尝试插入，插入不成功就用synchronized代码块加锁。
+</details>
+
+<details>
+<summary>concurrenthashmap的put流程</summary>
+首先计算key的hash，定位到node数组桶位置，如果桶为空，直接cas插入节点，cas失败会退化为synchronized代码块来插入节点。插入链表，有必要时进行树化。
+</details>
+<details>
+<summary>concurrenthashmap如何保证可见性</summary>
+ConcurrentHashMap 中的 Node 节点中，value 和 next 都是 volatile 的，这样就可以保证对 value 或 next 的更新会被其他线程立即看到。
+</details><details>
+<summary>为什么concurrenthashmap比hashtable的效率高</summary>
+Hashtable 在任何时刻只允许一个线程访问整个 Map，他是对整个map进行加锁，而concurrenthashmap非必要不加锁，首先用cas判断，cas失败再加锁。并且是对数组中的桶进行加锁，粒度细。get是无锁的，因为用volatile修饰。
+</details>
+
+<details>
+<summary>ConcurrentHashMap线程安全的原因
+</summary>
+适合读多写少，读不加锁写加锁。
 </details>
 
 <details>
 <summary> CopyOnWriteArrayList 的实现原理</summary>
-CopyOnWriteArrayList
+适合读多写少，在读不加锁，内部使用 volatile 变量来修饰数组 array，以确保读操作的内存可见性。
+写时加锁，用reentrantLock，创建新的数组，修改完之后替换旧数组。
 </details>
 
 <details>
 <summary>什么是BlockQueue？</summary>
-什么是BlockQueue？
+线程安全队列，支持阻塞的生产者和消费者模型。
+它的实现类有：
+1. ArrayBlockingQueue
+2. LinkedBlockingQueue
+3. PriorityBlockingQueue 按优先级取出
+4. DelayQueue 元素到期后才能取出
+5. SynchronousQueue 同步队列，容量为0，必须一对一交换数据，适用于高吞吐的任务提交。
+</details>
+<details>
+<summary>阻塞队列的实现</summary>
+以 ArrayBlockingQueue 为例，它内部维护了一个数组，使用两个指针分别指向队头和队尾。
+put 的时候先用 ReentrantLock 加锁，然后判断队列是否已满，如果已满就阻塞等待，否则插入元素
 </details>
 
 # 并发
 
-首先，操作系统层面有进程和线程，知道进程和线程的区别。java支持创建操作系统级别的线程。线程是一个概念
+首先，操作系统层面有进程和线程，所以需要知道：
 
-1. 知道如何创建线程
-2. 创建线程的过程中线程会出现哪些状态。
+- 知道进程和线程的区别
+- 线程之间如何通信
+  - 涉及到JMM 内存模型
+    - 对java内存模型的理解
 
-多线程带来了一些问题。就要保证线程安全。保证线程安全是一个大的目标：
 
-1. 为了控制对共享资源的并发访问，需要通过对共享资源加锁，所以要对锁有所了解
-   1. synchronized
-   2. Lock
-   3. 把共享资源设置为如原子类，是锁的一种。所以对原子类的原理cas了解
-3. 要控制线程之间的执行顺序。比如生产者唤醒消费者。则进行线程之间调度，知道线程之间调度的方式
-4. 为了帮助进行并发编程，使用并发工具类，理解一些常用的并发工具类
+java支持创建操作系统级别的线程。
+- java创建线程的方式
+  - start和run的区别
+
+- 线程生命周期中出现哪些状态。
+
+多线程带来了一些问题
+
+- 原子性 防止出现中间态
+- 可见性 一个线程的修改，对其他线程立即可见
+  - 涉及到volatile的作用
+  - 为什么volatile无法保证原子性
+  - volatile和synchronized的对比
+- 有序性 定义线程的执行顺序，防止出现死锁
+
+就要保证线程安全。保证线程安全是一个大的目标。
+
+- 从宏观角度，java通过那些方式实现线程安全？
+
+
+
+为了控制线程对共享资源的并发访问，需要通过对共享资源加锁，所以要对锁有所了解，如synchronized，Lock接口
+
+- synchronized的原理
+- 锁升级策略
+- 对比synchronized和reentrantLock的区别
+- reentrantLock的实现原理
+
+共享资源设置为如原子类，则是在资源性质层面上控制线程的并发访问，原子类的CAS是锁的一种。
+
+- CAS的原理
+- CAS可能的问题
+- 乐观锁和悲观锁的区别
+
+要控制线程之间的执行顺序。比如生产者唤醒消费者。则进行线程之间调度，Condition是线程之间调度的方式
+
+- wait/notify/notifyAll的作用
+- sleep和wait的区别
+- ReentrantLock的Condition的原理和作用
+
+要实现线程局部变量，每个线程拥有自己的副本，用到ThreadLocal
+
+- ThreadLocal怎么用
+- 实现方式
+- 为什么会出现内存泄漏？
+
+为了帮助进行并发编程，使用并发工具类，理解一些常用的并发工具类
+
+- 什么是CountDownLatch
+- 什么是CyclicBarrier，和CountDownLatch的区别
+- 什么是信号量Semaphore
 
 往往对多线程的使用不是自己主动创建线程，而是使用线程池，所以要对线程池深入理解
 
+- 为什么要有线程池，线程过多会怎样
+- 线程池工作流程
+- 线程池参数
+- 拒绝策略有哪些
+- 线程池调优
+
 接着就是会排查死锁问题，预防死锁。
 
-## 线程概念相关：
+- 死锁出现的条件
+- 预防死锁
+- 排查死锁的思路
+
+
+
+
 
 <details>
 <summary>说说进程和线程的区别？</summary>
@@ -273,7 +420,7 @@ start() 方法可以启动一个新线程，能够实现多线程执行。
 实现线程的局部变量用到的ThreadLocal 是什么？
 </details>
 
-## 线程安全：
+
 <details>
 <summary>多线程带来了哪些问题？</summary>
 一段代码块或者一个方法被多个线程同时执行，处理共享数据时会出现问题。
@@ -310,7 +457,7 @@ volatile是Java并发编程中常用的关键字，作为变量修饰符，无�
 不知道
 </details>
 
-## 锁相关：
+## 
 <details>
 <summary>Java有哪些锁？</summary>
 Java中有很多关于锁的概念，可以分类成下面几个方面理解
@@ -345,6 +492,8 @@ synchronized可以修饰方法以及代码块，volatile只能修饰变量。
 对cas
 </details>
 
+
+reentrantLock的condition是什么？跟synchronized的等待/唤醒机制有什么区别
 
 
 ## 线程池：
