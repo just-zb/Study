@@ -55,15 +55,13 @@ equals的特点在于，它是Object类中的方法，因此，equals方法往�
 泛型的作用：
 类型安全：泛型强制在编译时检查类型匹配，避免运行时出现 ClassCastException。
 消除强制转换：泛型自动处理类型转换，无需手动进行强制类型转换。
-代码复用：适用于编写通用算法和数据结构（如 List<T>、Map<K,V>）。
+代码复用：适用于编写通用算法和数据结构（如 List\<T>、Map<K,V>）。
 泛型的应用：
 自定义泛型类：泛型最后代表的数据类型是在创建对象时确定的。
 自定义泛型接口：泛型最终代表的数据类型是在继承该接口或者实现该接口时确定的。
 自定义泛型方法：泛型最终代表的数据类型是在调用方法时确定的，每次调用泛型方法，都可以指定不同的泛型类型。
 通过使用通配符（?）和边界（<? extends T>、<? super T>），可以实现灵活的类型匹配。
-
 ?extend T 是生产者，?super T是消费者
-
 List<String> 和 List<Object>实现方式完全相同，List<T>类在类型擦除后，T一定是object对象。所以他们两个相同，不过编译器为List<String>实现了强制转换。
 </details>
 
@@ -86,8 +84,7 @@ Java 9 之后内部从 char[] 改为了 byte[]，配合一个 coder 标志位，
 <details>
 <summary>String、StringBuffer与StringBuilder区别</summary>
 **可变性**，**线程安全性**，**性能**，**应用场景**
-
-  StringBuffer方法由synchronized同步。
+StringBuffer方法由synchronized同步。
 </details>
 
 
@@ -309,12 +306,12 @@ put 的时候先用 ReentrantLock 加锁，然后判断队列是否已满，如�
 首先，操作系统层面有进程和线程，所以需要知道：
 
 - 知道进程和线程的区别
-- 线程之间如何通信
-  - 涉及到JMM 内存模型
-    - 对java内存模型的理解
+- 进程通信方式
 
 
 java支持创建操作系统级别的线程。
+- java创建的线程,跟操作系统层面的线程如何对应?
+  
 - java创建线程的方式
   - start和run的区别
 
@@ -353,6 +350,7 @@ java支持创建操作系统级别的线程。
 - wait/notify/notifyAll的作用
 - sleep和wait的区别
 - ReentrantLock的Condition的原理和作用
+- Condition与wait/notify的区别
 
 要实现线程局部变量，每个线程拥有自己的副本，用到ThreadLocal
 
@@ -380,134 +378,6 @@ java支持创建操作系统级别的线程。
 - 预防死锁
 - 排查死锁的思路
 
-
-
-
-
-<details>
-<summary>说说进程和线程的区别？</summary>
-进程是是操作系统分配资源的最小单位
-线程是进程中的独立执行单元，多个线程可以共享同一个进程的资源，每个线程都有自己独立的栈和寄存器
-</details>
-
-
-
-<details>
-<summary>线程如何通信？</summary>
-可以通过消息传递和共享内存两种方法，java采用共享内存，就是JMM
-</details>
-
-<details>
-<summary>创建线程的方式？</summary>
-继承Thread类,重写run()方法。
-实现Runnable接口，实现run()方法。
-实现Callable接口（配合Future/FutureTask），实现call()方法。
-使用线程池(Executor框架)。
-</details>
-
-<details>
-<summary>线程有几种状态？</summary>
-具体建图
-</details>
-
-<details>
-<summary>线程start与run的区别？</summary>
-run() 方法不会创建一个新的线程，只会在当前线程中执行run方法的代码。
-start() 方法可以启动一个新线程，能够实现多线程执行。
-</details>
-<details>
-<summary>实现线程的局部变量用到的ThreadLocal 是什么？</summary>
-实现线程的局部变量用到的ThreadLocal 是什么？
-</details>
-
-
-<details>
-<summary>多线程带来了哪些问题？</summary>
-一段代码块或者一个方法被多个线程同时执行，处理共享数据时会出现问题。
-从三个要素保证安全：
-原子性：不会出现中间态。
-可见性：一个线程的修改其他线程看到变化。涉及到Java内存模型
-有序性：线程不会因为死锁、饥饿、活锁等问题导致无法继续执行。有序性定义了线程的执行顺序。
-</details>
-
-<details>
-<summary>你对 Java 内存模型的理解？</summary>
-Java 内存模型是 Java 虚拟机规范中定义的一个抽象模型，用来描述多线程环境中共享变量的内存可见性
-</details>
-
-<details>
-<summary>volatile关键字有什么用？volatile跟有序性的关系</summary>
-volatile是Java并发编程中常用的关键字，作为变量修饰符，无法修饰方法以及代码块，被修饰的共享变量保证了不同线程对该变量操作的内存可见性且禁止指令重排序。
-</details>
-
-<details>
-<summary>如何实现java线程安全？</summary>
-控制多个线程对共享资源的并发访问，避免出现数据不一致，竞态条件等问题
-可以分为三种方式：
-- 阻塞同步（使用锁实现）
-- 非阻塞同步（基于CAS操作）
-- 无同步方案（避免共享资源）
-</details>
-<details>
-<summary>控制线程间调度的方法？</summary>
-控制线程间调度的方法？
-</details>
-<details>
-<summary>sleep和wait的区别？</summary>
-不知道
-</details>
-
-## 
-<details>
-<summary>Java有哪些锁？</summary>
-Java中有很多关于锁的概念，可以分类成下面几个方面理解
-按照锁的获取机制（看待并发同步的角度）：乐观锁/悲观锁
-按照锁的竞争策略：公平锁/非公平锁
-按照锁控制的资源范围：偏向锁/轻量级锁/重量级锁/分段锁
-按照功能特性：可重入锁/读写锁/自旋锁/互斥锁
-按照持有方式：独享锁/共享锁
-</details>
-
-<details>
-<summary>你对Synchronized的理解？</summary>
-synchronized是Java中最基础的线程同步关键字，通过互斥锁机制保证多线程对共享资源的安全访问，可以修饰方法或代码块。
-</details>
-
-<details>
-<summary>synchronized与Lock的对比</summary>
-synchronized：是基于JVM的内置锁，只能用于方法和代码块，需要与wait() 和notify()/notifyAll() 方法一起使用，用于线程等待和通知。
-lock：是接口，Java提供的显式锁机制，需要手动获取和释放锁，更加灵活，支持响应中断、设置锁的公平性等，与Condition接口结合可以实现更细粒度的线程等待和通知机制。
-ReentrantLock：是Lock接口的一个具体实现类，拥有Lock的特性。
-</details>
-
-<details>
-<summary>volatile与synchronized对比
-</summary>
-synchronized是确保数据的一致性和线程安全，解决多个线程之间访问资源的同步性。而volatile是确保变量在多个线程的可见性和有序性。
-volatile不需要获取/释放锁，性能较高且轻量级。
-synchronized可以修饰方法以及代码块，volatile只能修饰变量。
-</details>
-<details>
-<summary>CAS 了解多少？</summary>
-对cas
-</details>
-
-
-reentrantLock的condition是什么？跟synchronized的等待/唤醒机制有什么区别
-
-
-## 线程池：
-<details>
-<summary>为什么要有线程池？线程太多会怎么样？</summary>
-采用多线程编程时，如果线程过多会造成系统资源的大量占用，降低系统效率。
-</details>
-
-<details>
-<summary>线程池参数
-</summary>
-线程池的构造函数有七个参数，分别是核心线程数（corePoolSize）、最大线程数（maximumPoolSize）、空闲线程存活时间（keepAliveTime）、时间单位（TimeUnit）、线程池任务队列（workQueue）、线程工厂（ThreadFactory）和拒绝策略（RejectedExecutionHandler）。
-线程池的参数决定了线程池的并发能力，资源占用和任务处理策略，需要根据实际场景进行合理配置。
-</details>
 
 # JVM
 
